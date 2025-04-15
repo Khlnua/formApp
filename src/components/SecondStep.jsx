@@ -7,10 +7,30 @@ export const SecondStep = ({
   previousStep,
   formValues,
   handleInputChange,
+  formError,
 }) => {
   const { email, phoneNumber, password, confirmPassword } = formValues;
+
+  const {
+    email: emailError,
+    phoneNumber: phoneNumberError,
+    password: passwordError,
+    confirmPassword: confirmPasswordError,
+  } = formError;
+
+  const handleSubmit = () => {
+    emailError;
+    phoneNumberError;
+    passwordError;
+    confirmPasswordError;
+    nextStep();
+  };
+
   return (
-    <div className="flex flex-col justify-between w-120 h-164 mt-45 p-8 rounded-xl bg-white">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col justify-between w-120 h-164 mt-45 p-8 rounded-xl bg-white"
+    >
       <div>
         <Title />
         <div className="flex flex-col gap-4 ">
@@ -58,13 +78,13 @@ export const SecondStep = ({
           Back
         </button>
         <button
-          onClick={nextStep}
+          type="submit"
           className="bg-black text-white pl-22.5 rounded-xl mt-4 px-4 p-2 flex w-70 "
         >
           Continue 2/3
           <ChevronRight />
         </button>
       </div>
-    </div>
+    </form>
   );
 };

@@ -12,6 +12,7 @@ import { initialFormValues } from "@/constants/constants";
 const Home = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState(initialFormValues);
+  const [formError, setFormError] = useState(initialFormValues);
 
   console.log("formValues", formValues);
 
@@ -22,11 +23,11 @@ const Home = () => {
   };
 
   const nextStep = () => {
-    setCurrentStep((prev = prev + 1));
+    setCurrentStep((prev) => prev + 1);
   };
 
   const previousStep = () => {
-    setCurrentStep((prev = prev - 1));
+    setCurrentStep((prev) => prev - 1);
   };
 
   const StepsComponents = [FirstStep, SecondStep, ThirdStep, FinalStep][
@@ -48,6 +49,7 @@ const Home = () => {
             previousStep={previousStep}
             handleInputChange={handleInputChange}
             formValues={formValues}
+            formError={formError}
           />
         </motion.div>
       </AnimatePresence>
