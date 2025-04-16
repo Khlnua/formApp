@@ -4,24 +4,50 @@ import { Title } from "./Title";
 import { useState, useRef } from "react";
 import Image from "next/legacy/image";
 
+const validateStepThree = ({ dateOfBirth, profileImage }) => {
+  const validationErrors = {};
+
+  const date = new Date();
+
+  if (!dateOfBirth) {
+    validationErrors.dateOfBirth = "Төрсөн өдрөө оруулна уу";
+  } else if (date - new Date(dateOfBirth) < 18 * 365 * 24 * 60 * 60 * 1000) {
+    validationErrors.dateOfBirth = "Та 18 ба түүнээс дээш настай байх ёстой";
+  }
+
+  if (!profileImage) {
+    validationErrors.profileImage = "Профайл зурагаа оруулна уу";
+  }
+
+  const isFormValid = Object.keys(validationErrors).length === 0;
+  console.log("dateOfBirth", profileImage);
+
+  return { isFormValid, validationErrors };
+};
+
 export const ThirdStep = ({
   nextStep,
   previousStep,
   formValues,
   handleInputChange,
-  formError,
+  formErrors,
+  updateFormErrors,
 }) => {
   const { dateOfBirth, profileImage } = formValues;
 
   const { dateOfBirth: dateOfBirthError, profileImage: profileImageError } =
-    formError;
+    formErrors;
 
   const handleSubmit = () => {
-    console.log("irlee");
+    event.preventDefault();
+    const { isFormValid, validationErrors } = validateStepThree(formValues);
 
-    dateOfBirthError;
-    dateOfBirthError;
-    // nextStep();
+    if (isFormValid) {
+      nextStep();
+      return;
+    }
+
+    updateFormErrors(validationErrors);
   };
 
   const inputImageRef = useRef(null);
@@ -68,12 +94,13 @@ export const ThirdStep = ({
     >
       <div>
         <Title />
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-11 ">
           <InputSection
             name="dateOfBirth"
             type="date"
             value={dateOfBirth}
             onChange={handleInputChange}
+            error={dateOfBirthError}
             placeholder="Your date of birth"
             label="Date of birth"
           />
@@ -82,6 +109,7 @@ export const ThirdStep = ({
             <input
               name="profileImage"
               ref={inputImageRef}
+              error={profileImageError}
               placeholder="Browse or Drop Image"
               label="Profile Image"
               type="file"
@@ -96,6 +124,7 @@ export const ThirdStep = ({
               className={`bg-gray-200 rounded-md flex justify-center items-center  w-104 h-45 border ${
                 isDragging ? "border-dashed" : "border-solid "
               }`}
+              error={profileImageError}
               onClick={openBrowse}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
@@ -106,6 +135,7 @@ export const ThirdStep = ({
                   <Image
                     className="absolute z-1"
                     src={previewLink}
+                    error={profileImageError}
                     width={416}
                     height={180}
                     alt="image"
@@ -123,6 +153,9 @@ export const ThirdStep = ({
             </div>
           </div>
         </div>
+        {profileImageError && (
+          <p className="text-red-500 text-4 h-4">{profileImageError} </p>
+        )}
       </div>
 
       <div className="flex w-104 gap-1">

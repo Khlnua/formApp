@@ -12,14 +12,17 @@ import { initialFormValues } from "@/constants/constants";
 const Home = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState(initialFormValues);
-  const [formError, setFormError] = useState(initialFormValues);
+  const [formErrors, setFormErrors] = useState(initialFormValues);
 
-  console.log("formValues", formValues);
+  const updateFormErrors = (error) => {
+    setFormErrors((previousErrors) => ({ ...previousErrors, ...error }));
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
     setFormValues((previousValues) => ({ ...previousValues, [name]: value }));
+    setFormErrors((previousErrors) => ({ ...previousErrors, [name]: "" }));
   };
 
   const nextStep = () => {
@@ -49,7 +52,9 @@ const Home = () => {
             previousStep={previousStep}
             handleInputChange={handleInputChange}
             formValues={formValues}
-            formError={formError}
+            formErrors={formErrors}
+            setFormErrors={setFormErrors}
+            updateFormErrors={updateFormErrors}
           />
         </motion.div>
       </AnimatePresence>

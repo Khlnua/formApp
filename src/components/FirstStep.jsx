@@ -1,11 +1,32 @@
 import { InputSection } from "./InputSection";
 import { Title } from "./Title";
 
+const isEmpty = (value) => !value?.trim();
+
+const validateStepOne = ({ firstName, lastName, userName }) => {
+  const validationErrors = {};
+
+  if (isEmpty(firstName)) {
+    validationErrors.firstName = "Нэрээ оруулна уу";
+  }
+  if (isEmpty(lastName)) {
+    validationErrors.lastName = "Овгоо оруулна уу";
+  }
+  if (isEmpty(userName)) {
+    validationErrors.userName = "Хэрэглэгчийн нэрээ оруулна уу";
+  }
+
+  const isFormValid = Object.keys(validationErrors).length === 0;
+
+  return { isFormValid, validationErrors };
+};
+
 export const FirstStep = ({
   nextStep,
   formValues,
   handleInputChange,
-  formError,
+  formErrors,
+  updateFormErrors,
 }) => {
   const { firstName, lastName, userName } = formValues;
 
@@ -13,15 +34,18 @@ export const FirstStep = ({
     firstName: firtNameError,
     lastName: lastNameError,
     userName: userNameError,
-  } = formError;
+  } = formErrors;
 
-  const handleSubmit = () => {
-    console.log("hii");
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const { isFormValid, validationErrors } = validateStepOne(formValues);
 
-    firtNameError;
-    lastNameError;
-    userNameError;
-    nextStep();
+    if (isFormValid) {
+      nextStep();
+      return;
+    }
+
+    updateFormErrors(validationErrors);
   };
 
   return (
@@ -31,12 +55,13 @@ export const FirstStep = ({
     >
       <div>
         <Title />
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-10">
           <InputSection
             name="firstName"
             type="text"
             value={firstName}
             onChange={handleInputChange}
+            error={firtNameError}
             placeholder="Your first name"
             label="First Name"
           />
@@ -45,14 +70,16 @@ export const FirstStep = ({
             type="text"
             value={lastName}
             onChange={handleInputChange}
+            error={lastNameError}
             placeholder="Your last name"
             label="Last Name"
           />
           <InputSection
-            name="usertName"
+            name="userName"
             type="text"
             value={userName}
             onChange={handleInputChange}
+            error={userNameError}
             placeholder="Your username"
             label="Username"
           />
