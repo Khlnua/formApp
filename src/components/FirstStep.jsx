@@ -1,34 +1,16 @@
-import { InputSection } from "./InputSection";
 import { Title } from "./Title";
-
-const isEmpty = (value) => !value?.trim();
-
-const validateStepOne = ({ firstName, lastName, userName }) => {
-  const validationErrors = {};
-
-  if (isEmpty(firstName)) {
-    validationErrors.firstName = "Нэрээ оруулна уу";
-  }
-  if (isEmpty(lastName)) {
-    validationErrors.lastName = "Овгоо оруулна уу";
-  }
-  if (isEmpty(userName)) {
-    validationErrors.userName = "Хэрэглэгчийн нэрээ оруулна уу";
-  }
-
-  const isFormValid = Object.keys(validationErrors).length === 0;
-
-  return { isFormValid, validationErrors };
-};
+import { InputSection } from "./InputSection";
+import { validateStepOne } from "@/utils/validationStep1";
 
 export const FirstStep = ({
   nextStep,
-  formValues,
-  handleInputChange,
   formErrors,
+  formValues,
+  currentStep,
   updateFormErrors,
+  handleInputChange,
 }) => {
-  const { firstName, lastName, userName } = formValues;
+  const { firstName, lastName, userName, parsedData } = formValues;
 
   const {
     firstName: firtNameError,
@@ -42,6 +24,10 @@ export const FirstStep = ({
 
     if (isFormValid) {
       nextStep();
+      localStorage.setItem(
+        "multiStepFormData",
+        JSON.stringify({ ...formValues, step: currentStep })
+      );
       return;
     }
 
@@ -57,31 +43,31 @@ export const FirstStep = ({
         <Title />
         <div className="flex flex-col gap-10">
           <InputSection
+            type="text"
             name="firstName"
-            type="text"
-            value={firstName}
-            onChange={handleInputChange}
-            error={firtNameError}
-            placeholder="Your first name"
             label="First Name"
+            placeholder="Your first name"
+            value={firstName}
+            error={firtNameError}
+            onChange={handleInputChange}
           />
           <InputSection
+            type="text"
             name="lastName"
-            type="text"
-            value={lastName}
-            onChange={handleInputChange}
-            error={lastNameError}
-            placeholder="Your last name"
             label="Last Name"
+            placeholder="Your last name"
+            value={lastName}
+            error={lastNameError}
+            onChange={handleInputChange}
           />
           <InputSection
-            name="userName"
             type="text"
-            value={userName}
-            onChange={handleInputChange}
-            error={userNameError}
-            placeholder="Your username"
+            name="userName"
             label="Username"
+            placeholder="Your username"
+            value={userName}
+            error={userNameError}
+            onChange={handleInputChange}
           />
         </div>
       </div>

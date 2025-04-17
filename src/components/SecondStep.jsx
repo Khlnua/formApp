@@ -1,46 +1,16 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { InputSection } from "./InputSection";
 import { Title } from "./Title";
-
-const isEmpty = (value) => !value?.trim();
-
-const validateStepTwo = ({ email, phoneNumber, password, confirmPassword }) => {
-  const validationErrors = {};
-
-  if (isEmpty(email)) {
-    validationErrors.email = "Мэйл хаягаа оруулна уу";
-  }
-
-  if (isEmpty(phoneNumber)) {
-    validationErrors.phoneNumber = "Утасны дугаараа оруулна уу";
-  } else if (phoneNumber.length !== 8) {
-    validationErrors.phoneNumber = "8 оронтой дугаар оруулна уу";
-  }
-
-  if (isEmpty(password)) {
-    validationErrors.password = "Нууц үгээ оруулна уу";
-  } else if (password.length < 6) {
-    validationErrors.password = "6 оронтой тоо оруулна уу";
-  }
-
-  if (isEmpty(confirmPassword)) {
-    validationErrors.confirmPassword = "Нууц үгээ давтаж оруулна уу";
-  } else if (password !== confirmPassword) {
-    validationErrors.confirmPassword = "Таны оруулсан нууц үг таарахгүй байна.";
-  }
-
-  const isFormValid = Object.keys(validationErrors).length === 0;
-
-  return { isFormValid, validationErrors };
-};
+import { InputSection } from "./InputSection";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { validateStepTwo } from "@/utils/validationStep2";
 
 export const SecondStep = ({
   nextStep,
-  previousStep,
   formValues,
-  handleInputChange,
   formErrors,
+  currentStep,
+  previousStep,
   updateFormErrors,
+  handleInputChange,
 }) => {
   const { email, phoneNumber, password, confirmPassword } = formValues;
 
@@ -51,12 +21,17 @@ export const SecondStep = ({
     confirmPassword: confirmPasswordError,
   } = formErrors;
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
     event.preventDefault();
+
     const { isFormValid, validationErrors } = validateStepTwo(formValues);
 
     if (isFormValid) {
       nextStep();
+      localStorage.setItem(
+        "multiStepFormData",
+        JSON.stringify({ ...formValues, step: currentStep })
+      );
       return;
     }
 
@@ -74,45 +49,45 @@ export const SecondStep = ({
           <InputSection
             name="email"
             type="email"
-            id="email"
-            value={email}
-            onChange={handleInputChange}
-            error={emailError}
-            placeholder="Your email"
             label="Email"
+            placeholder="Your email"
+            value={email}
+            error={emailError}
+            onChange={handleInputChange}
           />
           <InputSection
-            name="phoneNumber"
             type="number"
-            value={phoneNumber}
-            onChange={handleInputChange}
-            error={phoneNumberError}
-            placeholder="Your phone number"
+            name="phoneNumber"
             label="Phone number"
+            placeholder="Your phone number"
+            value={phoneNumber}
+            error={phoneNumberError}
+            onChange={handleInputChange}
           />
           <InputSection
             name="password"
             type="password"
-            value={password}
-            onChange={handleInputChange}
-            error={passwordError}
-            placeholder="Your password"
             label="Password"
+            placeholder="Your password"
+            value={password}
+            error={passwordError}
+            onChange={handleInputChange}
           />
           <InputSection
-            name="confirmPassword"
             type="password"
-            value={confirmPassword}
-            onChange={handleInputChange}
-            error={confirmPasswordError}
-            placeholder="Confirm password"
+            name="confirmPassword"
             label="Confirm password"
+            placeholder="Confirm password"
+            value={confirmPassword}
+            error={confirmPasswordError}
+            onChange={handleInputChange}
           />
         </div>
       </div>
 
       <div className="flex w-104 gap-1">
         <button
+          type="button"
           onClick={previousStep}
           className="bg-white text-black border-[#CBD5E1] border-[1px] rounded-xl mt-4 px-4 p-2 flex w-32"
         >
@@ -123,7 +98,7 @@ export const SecondStep = ({
           type="submit"
           className="bg-black text-white pl-22.5 rounded-xl mt-4 px-4 p-2 flex w-70 "
         >
-          Continue 3/3
+          Continue 2/3
           <ChevronRight />
         </button>
       </div>

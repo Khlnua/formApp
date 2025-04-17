@@ -1,18 +1,27 @@
 "use client";
 
-import { FirstStep } from "@/components/FirstStep";
-import { SecondStep } from "@/components/SecondStep";
-import { ThirdStep } from "@/components/ThirdStep";
-import { FinalStep } from "@/components/FinalStep";
-import { motion } from "motion/react";
-import { AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { initialFormValues } from "@/constants/constants";
+import { FirstStep, SecondStep, ThirdStep, FinalStep } from "@/components";
 
 const Home = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState(initialFormValues);
+
+  const dataFunction = () => {
+    const getData = localStorage.getItem("multiStepFormData");
+    return getData ? JSON.parse(getData) : null;
+  };
+
+  useEffect(() => {
+    const data = dataFunction();
+    if (data) {
+      setFormValues(data);
+      setCurrentStep(data.step);
+    }
+  }, []);
 
   const updateFormErrors = (error) => {
     setFormErrors((previousErrors) => ({ ...previousErrors, ...error }));
@@ -48,13 +57,14 @@ const Home = () => {
           transition={{ duration: 0.5 }}
         >
           <StepsComponents
-            nextStep={nextStep}
-            previousStep={previousStep}
-            handleInputChange={handleInputChange}
             formValues={formValues}
             formErrors={formErrors}
+            currentStep={currentStep}
+            nextStep={nextStep}
+            previousStep={previousStep}
             setFormErrors={setFormErrors}
             updateFormErrors={updateFormErrors}
+            handleInputChange={handleInputChange}
           />
         </motion.div>
       </AnimatePresence>

@@ -1,91 +1,47 @@
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { InputSection } from "./InputSection";
 import { Title } from "./Title";
-import { useState, useRef } from "react";
 import Image from "next/legacy/image";
-
-const validateStepThree = ({ dateOfBirth, profileImage }) => {
-  const validationErrors = {};
-
-  const date = new Date();
-
-  if (!dateOfBirth) {
-    validationErrors.dateOfBirth = "Төрсөн өдрөө оруулна уу";
-  } else if (date - new Date(dateOfBirth) < 18 * 365 * 24 * 60 * 60 * 1000) {
-    validationErrors.dateOfBirth = "Та 18 ба түүнээс дээш настай байх ёстой";
-  }
-
-  if (!profileImage) {
-    validationErrors.profileImage = "Профайл зурагаа оруулна уу";
-  }
-
-  const isFormValid = Object.keys(validationErrors).length === 0;
-  console.log("dateOfBirth", profileImage);
-
-  return { isFormValid, validationErrors };
-};
+import { InputSection } from "./InputSection";
+import { profilePic } from "@/utils/profileInput";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { validateStepThree } from "@/utils/validationStep3";
 
 export const ThirdStep = ({
   nextStep,
-  previousStep,
   formValues,
-  handleInputChange,
   formErrors,
+  previousStep,
   updateFormErrors,
+  handleInputChange,
 }) => {
   const { dateOfBirth, profileImage } = formValues;
 
   const { dateOfBirth: dateOfBirthError, profileImage: profileImageError } =
     formErrors;
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const { isFormValid, validationErrors } = validateStepThree(formValues);
 
     if (isFormValid) {
       nextStep();
+      localStorage.removeItem("multiStepFormData");
       return;
     }
 
     updateFormErrors(validationErrors);
   };
 
-  const inputImageRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [previewLink, setPreviewLink] = useState("");
-  const [tempFile, setTempFile] = useState({});
-
-  const openBrowse = () => {
-    inputImageRef.current?.click();
-  };
-
-  const handleChange = (event) => {
-    const file = Array.from(event.target.files)[0];
-
-    if (file) {
-      setTempFile(file);
-      setPreviewLink(URL.createObjectURL(file));
-    }
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = Array.from(event.dataTransfer.files)[0];
-    setPreviewLink(URL.createObjectURL(file));
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => setIsDragging(false);
-
-  const deleteImage = () => {
-    setPreviewLink("");
-    setTempFile({});
-    inputImageRef.current.value = "";
-  };
+  const {
+    openBrowse,
+    handleDrop,
+    deleteImage,
+    handleChange,
+    handleDragOver,
+    handleDragLeave,
+    isDragging,
+    previewLink,
+    inputImageRef,
+  } = profilePic();
 
   return (
     <form
@@ -96,24 +52,24 @@ export const ThirdStep = ({
         <Title />
         <div className="flex flex-col gap-11 ">
           <InputSection
-            name="dateOfBirth"
             type="date"
-            value={dateOfBirth}
-            onChange={handleInputChange}
-            error={dateOfBirthError}
-            placeholder="Your date of birth"
+            name="dateOfBirth"
             label="Date of birth"
+            placeholder="Your date of birth"
+            value={dateOfBirth}
+            error={dateOfBirthError}
+            onChange={handleInputChange}
           />
 
           <div className="flex w-104 h-45 ">
             <input
+              hidden
+              type="file"
               name="profileImage"
+              label="Profile Image"
+              placeholder="Browse or Drop Image"
               ref={inputImageRef}
               error={profileImageError}
-              placeholder="Browse or Drop Image"
-              label="Profile Image"
-              type="file"
-              hidden
               onChange={(event) => {
                 handleChange(event);
                 handleInputChange(event);
@@ -124,11 +80,11 @@ export const ThirdStep = ({
               className={`bg-gray-200 rounded-md flex justify-center items-center  w-104 h-45 border ${
                 isDragging ? "border-dashed" : "border-solid "
               }`}
-              error={profileImageError}
-              onClick={openBrowse}
               onDrop={handleDrop}
+              onClick={openBrowse}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
+              error={profileImageError}
             >
               {previewLink !== "" ? (
                 <div className="relative">
@@ -160,6 +116,7 @@ export const ThirdStep = ({
 
       <div className="flex w-104 gap-1">
         <button
+          type="button"
           onClick={previousStep}
           className="bg-white text-black border-[#CBD5E1] border-[1px] rounded-xl mt-4 px-4 p-2 flex w-32"
         >
