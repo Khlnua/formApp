@@ -1,6 +1,6 @@
 import { Title } from "./Title";
-import { useState, useRef } from "react";
 import Image from "next/legacy/image";
+import { useState, useRef } from "react";
 import { InputSection } from "./InputSection";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { validateStepThree } from "@/utils/validationStep3";
@@ -13,7 +13,7 @@ export const ThirdStep = ({
   updateFormErrors,
   handleInputChange,
 }) => {
-  const { dateOfBirth, profileImage } = formValues;
+  const { dateOfBirth } = formValues;
 
   const { dateOfBirth: dateOfBirthError, profileImage: profileImageError } =
     formErrors;
@@ -24,6 +24,7 @@ export const ThirdStep = ({
 
     if (isFormValid) {
       nextStep();
+
       localStorage.removeItem("multiStepFormData");
       return;
     }
@@ -86,7 +87,11 @@ export const ThirdStep = ({
             onChange={handleInputChange}
           />
 
-          <div className="flex w-104 h-45 ">
+          <div className=" w-104 h-45 ">
+            <label className="font-semibold text-[14px] text-[#334155] ">
+              Profile Image
+            </label>
+            <span className="text-[#E14942] font-semibold pl-0.5">*</span>
             <input
               hidden
               type="file"

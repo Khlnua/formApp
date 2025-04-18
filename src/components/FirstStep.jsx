@@ -24,6 +24,7 @@ export const FirstStep = ({
 
     if (isFormValid) {
       nextStep();
+
       localStorage.setItem(
         "multiStepFormData",
         JSON.stringify({ ...formValues, step: currentStep })
@@ -45,7 +46,7 @@ export const FirstStep = ({
           <InputSection
             type="text"
             name="firstName"
-            label="First Name"
+            label="First name"
             placeholder="Your first name"
             value={firstName}
             error={firtNameError}
@@ -54,7 +55,7 @@ export const FirstStep = ({
           <InputSection
             type="text"
             name="lastName"
-            label="Last Name"
+            label="Last name"
             placeholder="Your last name"
             value={lastName}
             error={lastNameError}

@@ -28,6 +28,7 @@ export const SecondStep = ({
 
     if (isFormValid) {
       nextStep();
+
       localStorage.setItem(
         "multiStepFormData",
         JSON.stringify({ ...formValues, step: currentStep })

@@ -1,4 +1,4 @@
-const isEmpty = (value) => !value?.trim();
+import { isEmpty } from "./validationStep2";
 
 export const validateStepOne = ({ firstName, lastName, userName }) => {
   const validationErrors = {};
