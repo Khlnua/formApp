@@ -10,7 +10,7 @@ export const FirstStep = ({
   updateFormErrors,
   handleInputChange,
 }) => {
-  const { firstName, lastName, userName, parsedData } = formValues;
+  const { firstName, lastName, userName } = formValues;
 
   const {
     firstName: firtNameError,

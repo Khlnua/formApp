@@ -1,7 +1,7 @@
 import { Title } from "./Title";
+import { useState, useRef } from "react";
 import Image from "next/legacy/image";
 import { InputSection } from "./InputSection";
-import { profilePic } from "@/utils/profileInput";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { validateStepThree } from "@/utils/validationStep3";
 
@@ -31,17 +31,42 @@ export const ThirdStep = ({
     updateFormErrors(validationErrors);
   };
 
-  const {
-    openBrowse,
-    handleDrop,
-    deleteImage,
-    handleChange,
-    handleDragOver,
-    handleDragLeave,
-    isDragging,
-    previewLink,
-    inputImageRef,
-  } = profilePic();
+  const inputImageRef = useRef(null);
+  const [tempFile, setTempFile] = useState({});
+  const [previewLink, setPreviewLink] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+
+  const openBrowse = () => {
+    inputImageRef.current?.click();
+  };
+
+  const handleChange = (event) => {
+    const file = Array.from(event.target.files)[0];
+
+    if (file) {
+      setTempFile(file);
+      setPreviewLink(URL.createObjectURL(file));
+    }
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = Array.from(event.dataTransfer.files)[0];
+    setPreviewLink(URL.createObjectURL(file));
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => setIsDragging(false);
+
+  const deleteImage = () => {
+    setPreviewLink("");
+    setTempFile({});
+    inputImageRef.current.value = "";
+  };
 
   return (
     <form
